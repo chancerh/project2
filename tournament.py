@@ -4,7 +4,7 @@
 #
 
 import psycopg2
-
+from bleach import clean
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
@@ -33,6 +33,7 @@ def countPlayers():
     """Returns the number of players currently registered."""
     db = connect()
     cursor = db.cursor()
+    # Count the number of IDs in the players table
     cursor.execute("SELECT COUNT(id) FROM players")
     count = cursor.fetchone()[0]
     db.close()
@@ -50,7 +51,9 @@ def registerPlayer(name):
     """
     db = connect()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO players (name) VALUES (%s);", (name, ))
+    # Insert name into players table - ID automatically created by DB
+    # Because name is text, make sure that it is "clean"
+    cursor.execute("INSERT INTO players (name) VALUES (%s);", (clean(name), ))
     db.commit()
     db.close()
 
@@ -70,12 +73,11 @@ def playerStandings():
     """
     db = connect()
     cursor = db.cursor()
+    # Read the playerStandings table and format the output
     cursor.execute("SELECT * FROM playerStandings")
     standings = [(int(row[0]), str(row[1]), int(row[2]), int(row[3]))
                  for row in cursor.fetchall()]
     return standings
-
-
 
 
 def reportMatch(winner, loser):
@@ -108,9 +110,15 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    # Get the player standings
     standings = playerStandings()
+
+    # Standings is ordered by number of wins, so just need to pair adjacent
+    # players. Create a list that goes from 0 to the number of players by 2.
+    # Each element of that list represents the index of player one. Pair each
+    # with (index of player 1) + 1
     numPlayers = len(standings)
     indexBy2 = range(0, numPlayers, 2)
     pairings = map(lambda x: (standings[x][0:2] + standings[x + 1][0:2]),
-                    indexBy2)
+                   indexBy2)
     return pairings
