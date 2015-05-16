@@ -77,6 +77,7 @@ def playerStandings():
     cursor.execute("SELECT * FROM playerStandings")
     standings = [(int(row[0]), str(row[1]), int(row[2]), int(row[3]))
                  for row in cursor.fetchall()]
+    db.close()
     return standings
 
 
