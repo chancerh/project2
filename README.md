@@ -1,16 +1,26 @@
 # Tournament Database
 
-## What is it?
+## Description
+This package contains two components: tournament.sql, a database schema,  and 
+tournament.py, a python module. The schema sets up a database to store game 
+players, matches and results. The python module provides functions to interact
+with the database and pair up players in tournament matches. 
 
+## Database setup
+To setup the database, create a new database called "tournament" from the 
+command line with the createdb command:
+```
+createdb tournament
+```
+Load the schema using the psql command:
+```
+psql -d tournament -f tournament.sql
+```
 
+Note: This will delete any existing tables named players or matches as well as
+any objects that depend on these tables. If these tables do not exist, the 
+psql output will contain error messages stating that these tables do not exist.
+These messages can be ignored. 
 
-This package contains the following files:
-     - tournament.sql
-     - tournament.py
-     - This README
-
-To use this program, setup the database by running psql -f tournament.sql from 
-the command line. NOTE: This will delete any existing tables named players and 
-matches as well as any objects that depend on these tables. Once the database is
-setup, you can import the functions from tournament.py to interact with the 
-tournament database. 
+## Using the Python module
+The tournament.py module can be imported like any normal python module. 
