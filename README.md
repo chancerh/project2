@@ -3,7 +3,7 @@
 ## Purpose
 This application provides a Python module to keep track of players,
 matches, and game outcomes in a PostgreSQL database. It also pairs
-players using the Swiss system method.
+players using the Swiss system.
 
 ## Files Included
 * tournament.sql: Contains code to setup a database called
